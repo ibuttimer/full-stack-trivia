@@ -1,6 +1,12 @@
+# VS Code files
 .vscode
 __pycache__
 venv
+
+# Intellij IDEA files
+.idea
+.run
+venvd
 
 # OS generated files #
 ######################
@@ -11,3 +17,6 @@ venv
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+/backend/secrets.py
+/frontend/node_modules/

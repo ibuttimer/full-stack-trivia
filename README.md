@@ -44,3 +44,41 @@ The `./frontend` directory contains a complete React frontend to consume the dat
 Pay special attention to what data the frontend is expecting from each API response to help guide how you format your API.
 
 [View the README.md within ./frontend for more details.](./frontend/README.md)
+
+
+## Implementation
+### Features
+* An additional field has been added to the questions table to specify the words to be matched to determine if the supplied answer is correct. 
+  [Natural Language Toolkit](https://www.nltk.org/) is used to remove stop words from answers, to improve answer check accuracy.
+    > To avoid the necessity to download the required NTLK Stopwords Corpus and tokeniser, they are included in the [backend/nltk_data](backend/nltk_data) folder, and the application appends this folder to the default NLTK data paths. 
+* Users have been added to the database, and their overall game score is tracked. Users are auto-registered on initial login.
+* The frontend application has been re-styled.
+* The project structure has been reorganised to aid maintenance.
+
+> Please see the backend [README.md](backend/README.md) for details of how to configure and run the application.
+> 
+> The API documentation is available at [API](backend/README.md#api).
+
+
+#### Project Structure
+The application is structure as follows:
+  ```shell
+  ├── README.md
+  ├── backend               - backend application
+  │   ├── flaskr            - backend application code
+  │   │   ├── controller    - controllers for processing API requests
+  │   │   ├── model         - database ORM models
+  │   │   ├── service       - service layer interfacing between controllers and database
+  │   │   └── util          - miscellaneous application code
+  │   ├── migrations        - database management
+  │   ├── nltk_data         - NLTK data files, see XXXXX
+  │   ├── setup             - setup related files
+  │   ├── test              - unittest test scripts
+  │   ├── config.py         - application configuration
+  │   ├── requirements.txt  - The dependencies to be installed with "pip3 install -r requirements.txt"
+  │   ├── secrets.py        - Database URLs, see [Database setup](./backend/README.md#database-setup)
+  │   └── test_config.py    - unittest application configuration
+  └── frontend              - frontend application
+      ├── public            - static web files
+      └── src               - React source files
+  ```
