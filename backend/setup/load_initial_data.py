@@ -6,7 +6,8 @@ import random
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from backend.config import SQLALCHEMY_DATABASE_URI
+import nltk
+from backend.config import SQLALCHEMY_DATABASE_URI, NLTK_DATA_PATH
 
 # ---------------------------------------------------------------------------- #
 # App Config.
@@ -17,6 +18,8 @@ engine = create_engine(SQLALCHEMY_DATABASE_URI)
 
 Session = sessionmaker(bind=engine)
 session = Session()
+
+nltk.data.path.append(NLTK_DATA_PATH)
 
 # ---------------------------------------------------------------------------- #
 # Models.

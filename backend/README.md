@@ -149,7 +149,7 @@ $ cd /path/to/project/backend/setup           > cd \path\to\project\backend\setu
 $ export PYTHONPATH=/path/to/project          > set PYTHONPATH=/path/to/project
 $ python -m load_initial_data                 > python -m load_initial_data
 ```
-
+> **Note:** On Windows, use the short names generated for folders with names which include spaces.
 ##### Run the application
 Run the following commands:
 ```bash

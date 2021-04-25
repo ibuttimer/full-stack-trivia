@@ -49,46 +49,52 @@ function QuizView () {
 
 
     function getNextQuestion(category) {
-        const prevQuestions = [...previousQuestions]
-        if (currentQuestion.id) {
-            prevQuestions.push(currentQuestion.id)
-        }
-        if (!category) {
-            category = quizCategory;
-        }
-        let requestData = {previous_questions: prevQuestions};
-        if (category.id > 0) {
-            requestData.quiz_category = category;
-        }
-        setGuessCorrect(false);
 
-        $.ajax({
-            url: '/api/quizzes',
-            type: "POST",
-            dataType: 'json',
-            contentType: 'application/json',
-            data: JSON.stringify(requestData),
-            xhrFields: {
-                withCredentials: true
-            },
-            crossDomain: true,
-            success: (result) => {
-                setShowAnswer(false);
-                setPreviousQuestions(prevQuestions);
-                setCurrentQuestion(result.question);
-                if (result.question) {
-                    setForceEnd(false);
-                    setNumQuestions(numQuestions + 1);
-                } else {
-                    setForceEnd(true);
-                }
-                return;
-            },
-            error: (error) => {
-                alert('Unable to load question. Please try your request again')
-                return;
+        let end = (numQuestions === questionsPerPlay);
+        if (!end) {
+            const prevQuestions = [...previousQuestions]
+            if (currentQuestion.id) {
+                prevQuestions.push(currentQuestion.id)
             }
-        })
+            if (!category) {
+                category = quizCategory;
+            }
+            let requestData = {previous_questions: prevQuestions};
+            if (category.id > 0) {
+                requestData.quiz_category = category;
+            }
+            setGuessCorrect(false);
+
+            $.ajax({
+                url: '/api/quizzes',
+                type: "POST",
+                dataType: 'json',
+                contentType: 'application/json',
+                data: JSON.stringify(requestData),
+                xhrFields: {
+                    withCredentials: true
+                },
+                crossDomain: true,
+                success: (result) => {
+                    setShowAnswer(false);
+                    setPreviousQuestions(prevQuestions);
+                    setCurrentQuestion(result.question);
+                    if (result.question) {
+                        setForceEnd(false);
+                        setNumQuestions(numQuestions + 1);
+                    } else {
+                        setForceEnd(true);
+                    }
+                    return;
+                },
+                error: (error) => {
+                    alert('Unable to load question. Please try your request again')
+                    return;
+                }
+            })
+        } else {
+            setForceEnd(true);
+        }
     }
 
 
