@@ -93,6 +93,10 @@ def create_app(test_config=None):
     def internal_server_error(error):
         return http_error_result(HTTPStatus.INTERNAL_SERVER_ERROR, error)
 
+    @app.errorhandler(ValueError)
+    def internal_server_error(error):
+        return http_error_result(HTTPStatus.INTERNAL_SERVER_ERROR, error)
+
     return app
 
 

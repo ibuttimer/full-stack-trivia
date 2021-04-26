@@ -18,7 +18,11 @@ if FILE_CFG_AVAILABLE:
     from . import SERVER, PORT, DATABASE, USERNAME, PASSWORD
     db_info = f'{USERNAME}:{PASSWORD}@{SERVER}:{PORT}/{DATABASE}'
 else:
-    db_info = os.getenv('DATABASE_URI', '')
+    db_info = None
+db_info = os.getenv('DATABASE_URI', db_info)    # Environment variable has priority.
+if db_info is None:
+    raise ValueError(
+        "Database credentials not configured: set using 'secrets.py' or environment variable 'DATABASE_URI'")
 
 SQLALCHEMY_DATABASE_URI = f'postgresql://{db_info}'
 

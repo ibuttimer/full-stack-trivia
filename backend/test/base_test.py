@@ -22,8 +22,6 @@ class TriviaTestCase(unittest.TestCase):
         self.app = create_app(test_config=test_config)
         self.app.testing = True
         self.client = self.app.test_client()
-        self.database_name = test_config.DATABASE
-        self.database_path = test_config.SQLALCHEMY_DATABASE_URI
         setup_db(self.app)
 
         # binds the app to the current context

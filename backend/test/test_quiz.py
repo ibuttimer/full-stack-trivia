@@ -6,7 +6,7 @@ from backend.flaskr import QUIZZES_URL, QUIZ_RESULTS_URL, USER_ID, NUM_CORRECT, 
 from backend.flaskr.model.models import QUESTION_FIELDS, User, M_USERNAME
 from backend.flaskr.util import PREVIOUS_QUESTIONS, QUIZ_CATEGORY
 from backend.test.base_test import TriviaTestCase
-from backend.test.misc import make_url, MatchParam
+from backend.test.misc import make_url, Expect
 from backend.test.test_data import *
 from backend.test.test_users import UsersTestCase
 
@@ -162,13 +162,11 @@ class QuizzesTestCase(TriviaTestCase):
                     NUM_CORRECT: new_num_correct - start_num_correct,
                     NUM_QUESTIONS: new_num_questions - start_num_questions
                 })
-            self.assert_ok(resp.status_code)
 
-            resp_body = json.loads(resp.data)
-            self.assert_body_entry(resp_body, M_ID, MatchParam.EQUAL, value=user_id)
-            self.assert_body_entry(resp_body, M_USERNAME, MatchParam.EQUAL, value=username)
-            self.assert_body_entry(resp_body, NUM_CORRECT, MatchParam.EQUAL, value=new_num_correct)
-            self.assert_body_entry(resp_body, NUM_QUESTIONS, MatchParam.EQUAL, value=new_num_questions)
+            UsersTestCase.assert_user(self, resp,
+                                      user_id=user_id, username=username,
+                                      num_questions=new_num_questions, num_correct=new_num_correct,
+                                      expect=Expect.SUCCESS)
 
     def test_save_invalid_quiz_result(self):
         """

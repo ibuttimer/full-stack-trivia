@@ -13,10 +13,41 @@ class UsersTestCase(TriviaTestCase):
     """This class represents the test case for trivia users"""
 
     @staticmethod
+    def assert_user(testcase: TriviaTestCase, resp: dict, user_id: int, username: str,
+                    num_questions: int, num_correct: int,
+                    expect: Expect = Expect.SUCCESS, error_code: int = HTTPStatus.OK):
+        """
+        Assert user result.
+        """
+        resp_body = json.loads(resp.data)
+
+        if expect == Expect.SUCCESS:
+            testcase.assert_ok(resp.status_code)
+
+            testcase.assert_success_response(resp_body)
+
+            testcase.assertTrue('user' in resp_body.keys())
+            user_info = resp_body['user']
+            if user_id is None:
+                testcase.assertTrue(M_ID in user_info.keys())   # Don't check id, just that there is one.
+            else:
+                testcase.assert_body_entry(user_info, M_ID, MatchParam.EQUAL, value=user_id)
+            testcase.assert_body_entry(user_info, M_USERNAME, MatchParam.EQUAL, value=username)
+            testcase.assert_body_entry(user_info, M_NUM_QUESTIONS, MatchParam.EQUAL, value=num_questions)
+            testcase.assert_body_entry(user_info, M_NUM_CORRECT, MatchParam.EQUAL, value=num_correct)
+        else:
+            if error_code == HTTPStatus.UNAUTHORIZED:
+                testcase.assert_unauthorized_request(resp.status_code)
+            else:
+                testcase.assert_bad_request(resp.status_code)
+
+            testcase.assertTrue('detailed_message' in resp_body.keys())
+
+    @staticmethod
     def login_user(testcase: TriviaTestCase, username: str, password: str,
                    expect: Expect = Expect.SUCCESS, error_code: int = HTTPStatus.OK):
         """
-        Login user
+        Login user.
         """
         with testcase.client as client:
             resp = client.post(
@@ -24,24 +55,9 @@ class UsersTestCase(TriviaTestCase):
                      M_USERNAME: username, M_PASSWORD: password
                 }
             )
-            resp_body = json.loads(resp.data)
-
-            if expect == Expect.SUCCESS:
-                testcase.assert_ok(resp.status_code)
-
-                testcase.assertTrue('user' in resp_body.keys())
-                user_info = resp_body['user']
-                testcase.assertTrue(M_ID in user_info.keys())
-                testcase.assert_body_entry(user_info, M_USERNAME, MatchParam.EQUAL, value=username)
-                testcase.assert_body_entry(user_info, M_NUM_QUESTIONS, MatchParam.EQUAL, value=0)
-                testcase.assert_body_entry(user_info, M_NUM_CORRECT, MatchParam.EQUAL, value=0)
-            else:
-                if error_code == HTTPStatus.UNAUTHORIZED:
-                    testcase.assert_unauthorized_request(resp.status_code)
-                else:
-                    testcase.assert_bad_request(resp.status_code)
-
-                testcase.assertTrue('detailed_message' in resp_body.keys())
+            UsersTestCase.assert_user(testcase, resp,
+                                      user_id=None, username=username, num_questions=0, num_correct=0,
+                                      expect=expect, error_code=error_code)
 
     @staticmethod
     def register_user(testcase: TriviaTestCase, username: str, password: str,
@@ -55,24 +71,9 @@ class UsersTestCase(TriviaTestCase):
                      M_USERNAME: username, M_PASSWORD: password
                 }
             )
-            resp_body = json.loads(resp.data)
-
-            if expect == Expect.SUCCESS:
-                testcase.assert_ok(resp.status_code)
-
-                testcase.assertTrue('user' in resp_body.keys())
-                user_info = resp_body['user']
-                testcase.assertTrue(M_ID in user_info.keys())
-                testcase.assert_body_entry(user_info, M_USERNAME, MatchParam.EQUAL, value=username)
-                testcase.assert_body_entry(user_info, M_NUM_QUESTIONS, MatchParam.EQUAL, value=0)
-                testcase.assert_body_entry(user_info, M_NUM_CORRECT, MatchParam.EQUAL, value=0)
-            else:
-                if error_code == HTTPStatus.UNAUTHORIZED:
-                    testcase.assert_unauthorized_request(resp.status_code)
-                else:
-                    testcase.assert_bad_request(resp.status_code)
-
-                testcase.assertTrue('detailed_message' in resp_body.keys())
+            UsersTestCase.assert_user(testcase, resp,
+                                      user_id=None, username=username, num_questions=0, num_correct=0,
+                                      expect=expect, error_code=error_code)
 
     @staticmethod
     def timestamped_username(username: str) -> str:
